@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 defineProps<{ userAnswers: UserAnswer[] }>()
+
+const emit = defineEmits(['reset'])
 </script>
 
 <template>
@@ -16,6 +18,7 @@ defineProps<{ userAnswers: UserAnswer[] }>()
         {{ userAnswer.question.correct_answer }}
       </p>
     </div>
+    <button @click="emit('reset')">Reset</button>
   </section>
 </template>
 

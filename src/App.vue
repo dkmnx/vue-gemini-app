@@ -169,6 +169,11 @@ async function startQuiz(topic: string) {
 function storeAnswer(answer: UserAnswer) {
   userAnswers.value.push(answer)
 }
+
+function reset() {
+  status.value = 'start'
+  userAnswers.value = []
+}
 </script>
 
 <template>
@@ -182,7 +187,7 @@ function storeAnswer(answer: UserAnswer) {
       :questions="question!.results"
     />
     <LoadingScreen v-if="status === 'loading'" />
-    <ResultScreen v-if="status === 'finished'" :user-answers="userAnswers" />
+    <ResultScreen @reset="reset" v-if="status === 'finished'" :user-answers="userAnswers" />
     <p v-show="isError">Something went wrong!</p>
   </template>
   <template v-else>
