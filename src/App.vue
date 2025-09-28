@@ -2,13 +2,18 @@
 import { ref } from 'vue'
 import StartScreen from './components/StartScreen.vue'
 import { GoogleGenAI, Type } from '@google/genai'
+import QuizScreen from './components/QuizScreen.vue'
+import LoadingScreen from './components/LoadingScreen.vue'
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY
 
 const question = ref<string | undefined>(undefined)
+const status = ref('start')
+const isError = ref(false)
 
 async function startQuiz(topic: string) {
-  question.value = 'Loading question...'
+  status.value = 'loading'
+  isError.value = false
 
   try {
     const ai = new GoogleGenAI({ apiKey })
@@ -77,19 +82,24 @@ async function startQuiz(topic: string) {
       })
       console.log(response.text)
       question.value = response.text
+      status.value = 'ready'
     }
 
     await main()
   } catch (err) {
     question.value = `Something went wrong! ${err}`
+    status.value = 'start'
+    isError.value = true
   }
 }
 </script>
 
 <template>
   <h1>Vue Quiz Generator</h1>
-  <StartScreen @start-quiz="startQuiz" />
-  <pre>{{ question }}</pre>
+  <StartScreen v-if="status === 'start'" @start-quiz="startQuiz" />
+  <QuizScreen v-if="status === 'ready'" />
+  <LoadingScreen v-if="status === 'loading'" />
+  <p v-show="isError">Something went wrong!</p>
 </template>
 
 <style scoped></style>
