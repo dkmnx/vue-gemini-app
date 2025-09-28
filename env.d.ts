@@ -13,3 +13,8 @@ interface QuestionFormat {
   correct_answer: string
   incorrect_answers: string[]
 }
+
+interface UserAnswer {
+  question: QuestionFormat
+  answer: string
+}

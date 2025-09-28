@@ -5,6 +5,7 @@ import { GoogleGenAI, Type } from '@google/genai'
 import QuizScreen from './components/QuizScreen.vue'
 import LoadingScreen from './components/LoadingScreen.vue'
 import OpenAI from 'openai'
+import ResultScreen from './components/ResultScreen.vue'
 
 type ApiProvider = 'gemini' | 'deepseek'
 
@@ -27,6 +28,7 @@ switch (apiProvider) {
 const question = ref<Questions | undefined>(undefined)
 const status = ref('start')
 const isError = ref(false)
+const userAnswers = ref<UserAnswer[]>([])
 
 async function geminiMain(topic: string) {
   const ai = new GoogleGenAI({ apiKey })
@@ -163,14 +165,24 @@ async function startQuiz(topic: string) {
     isError.value = true
   }
 }
+
+function storeAnswer(answer: UserAnswer) {
+  userAnswers.value.push(answer)
+}
 </script>
 
 <template>
   <h1>Vue Quiz Generator</h1>
   <template v-if="apiKey">
     <StartScreen v-if="status === 'start'" @start-quiz="startQuiz" />
-    <QuizScreen v-if="status === 'ready'" :questions="question!.results" />
+    <QuizScreen
+      v-if="status === 'ready'"
+      @store-answer="storeAnswer"
+      @end-quiz="status = 'finished'"
+      :questions="question!.results"
+    />
     <LoadingScreen v-if="status === 'loading'" />
+    <ResultScreen v-if="status === 'finished'" :user-answers="userAnswers" />
     <p v-show="isError">Something went wrong!</p>
   </template>
   <template v-else>

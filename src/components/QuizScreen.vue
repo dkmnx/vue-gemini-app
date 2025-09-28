@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 
+const emit = defineEmits(['store-answer', 'end-quiz'])
+
 const props = defineProps<{
   questions: QuestionFormat[]
 }>()
@@ -16,13 +18,25 @@ const shuffleOptions = computed(() => {
 })
 
 function submitAnswer() {
-  if (currentQuestion.value < props.questions.length - 1) currentQuestion.value++
+  emit('store-answer', {
+    question: props.questions[currentQuestion.value],
+    answer: selectedOption.value,
+  })
+
+  selectedOption.value = null
+
+  if (currentQuestion.value === props.questions.length - 1) {
+    emit('end-quiz')
+  } else {
+    currentQuestion.value += 1
+  }
 }
 </script>
 
 <template>
   <section>
-    <h2>Quiz Component</h2>
+    <h2>Quiz {{ currentQuestion + 1 }}</h2>
+    <progress :max="1" :value="(currentQuestion + 1) / props.questions.length" />
 
     <h3>{{ questions[currentQuestion].question }}</h3>
 
