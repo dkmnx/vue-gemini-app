@@ -7,7 +7,7 @@ import LoadingScreen from './components/LoadingScreen.vue'
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY
 
-const question = ref<string | undefined>(undefined)
+const question = ref<Questions | undefined>(undefined)
 const status = ref('start')
 const isError = ref(false)
 
@@ -80,14 +80,13 @@ async function startQuiz(topic: string) {
         contents,
         config,
       })
-      console.log(response.text)
-      question.value = response.text
+      question.value = JSON.parse(response.text ?? '')
       status.value = 'ready'
     }
 
     await main()
   } catch (err) {
-    question.value = `Something went wrong! ${err}`
+    console.error(err)
     status.value = 'start'
     isError.value = true
   }
@@ -97,7 +96,7 @@ async function startQuiz(topic: string) {
 <template>
   <h1>Vue Quiz Generator</h1>
   <StartScreen v-if="status === 'start'" @start-quiz="startQuiz" />
-  <QuizScreen v-if="status === 'ready'" />
+  <QuizScreen v-if="status === 'ready'" :questions="question!.results" />
   <LoadingScreen v-if="status === 'loading'" />
   <p v-show="isError">Something went wrong!</p>
 </template>
