@@ -40,7 +40,7 @@ function submitAnswer() {
 
     <h3>{{ questions[currentQuestion].question }}</h3>
 
-    <div>
+    <div class="options">
       <button
         :class="{ active: option === selectedOption }"
         v-for="option in shuffleOptions"
@@ -59,5 +59,15 @@ function submitAnswer() {
 .active {
   border: 2px solid black;
   background-color: rgb(255, 252, 206);
+}
+</style>
+
+<style scoped>
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 18px;
+  max-width: 50%;
 }
 </style>
