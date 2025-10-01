@@ -15,9 +15,11 @@ let apiKey: string | undefined
 
 switch (apiProvider) {
   case 'gemini':
+    console.log('Using Gemini API')
     apiKey = import.meta.env.VITE_GEMINI_API_KEY
     break
   case 'deepseek':
+    console.log('Using Deepseek API')
     apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY
     break
   default:
