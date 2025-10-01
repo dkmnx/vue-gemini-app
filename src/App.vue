@@ -9,7 +9,7 @@ import ResultScreen from './components/ResultScreen.vue'
 
 type ApiProvider = 'gemini' | 'deepseek'
 
-const apiProvider = 'gemini' as ApiProvider
+const apiProvider = (import.meta.env.VITE_AI_PROVIDER as ApiProvider) || 'gemini'
 
 let apiKey: string | undefined
 
